@@ -14,4 +14,4 @@ app.use( express.urlencoded({extended: false, limit: 1000000000}) );
 require('./socket')(io);
 
 
-http.listen(3000, () => console.log(`server on port ${app.get('PORT')}`));
+http.listen(app.get('PORT'), () => console.log(`server on port ${app.get('PORT')}`));
