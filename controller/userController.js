@@ -88,27 +88,6 @@ const UserController = {
         }
     },
 
-    buscarUserMultiple: async (req = request, res = response) => {
-        let { name } = req.body;
-        let { skip = 0 } = req.query;
-        skip = Number(skip);
-        const ofsset = skip * 5;
-        if(!name){
-            errorCustom(res, '');
-        }
-        name = new RegExp(name, 'i');
-        try {
-            const users = await UserModel.find({where: { name }}).limit(5).skip(ofsset);
-            const total = await UserModel.countDocuments({where: { name }});
-            console.log('total :>> ', total);
-            if(skip>0){
-                skip -= 1;
-            }
-            return res.json({users, total, pageIndex: skip ?? 1});
-        } catch (error) {
-            errorCustom(res, error);
-        }
-    },
 
 
     actualizar: async (req = request, res = response) => {
