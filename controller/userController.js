@@ -2,7 +2,6 @@ const {request, response} = require('express');
 const UserModel = require('../models/userModel');
 const { Types } = require('mongoose');
 const errorCustom = require('../utils/errores');
-const { findByIdAndUpdate } = require('../models/userModel');
 const UserController = {
     get: async (req = request, res = response) => {
         // throw new Error('jjjjjjjjjjjjjj');
