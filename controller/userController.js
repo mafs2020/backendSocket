@@ -9,11 +9,7 @@ const UserController = {
         const limite = 5;
         let { skip = 5 } = req.query;
         skip = Number(skip);
-        if(skip == 0){
-
-        } else {
-            skip -= 1;
-        }
+        if(skip) skip -= 1;
         const offset = limite * skip;
         try {
             const users = await UserModel.find().limit(limite).skip(offset);
@@ -73,6 +69,34 @@ const UserController = {
         }
     },
 
+    buscador: async (req = request, res = response) => {
+        let { termino = '' } = req.body;
+        let { skip = 0 } = req.query;
+        termino = new RegExp(termino,'i');
+        console.log('termino :>> ', termino);
+        console.log('skip :>> ', skip);
+        const limite = 5;
+        skip = Number(skip);
+        if(skip) skip -= 1;
+        const offset = skip * limite;
+        try {
+            const total = UserModel.countDocuments({ name: termino });
+            const users = UserModel.find({ name: termino }, null, { skip: offset, limit: 5});
+            console.log('enviado==============');
+            console.log('termino :>> ', termino);
+            console.log('skip :>> ', skip);
+            console.log('skip2 :>> ', skip || 1);
+            const response = await Promise.all([total, users]);
+            return res.json({
+                total: response[0],
+                users: response[1],
+                pageIndex: skip || 1,
+                pageSize: limite});
+        } catch (error) {
+            errorCustom(res, error);
+        }
+    },
+
 
     buscarUser: async (req = request, res = response) => {
         const { id } = req.params;
@@ -82,7 +106,7 @@ const UserController = {
                 const user = await UserModel.findById(id);
                 return res.json(user);
             }
-            return res.status(400).json({ok:false, msj: ' el id esta euivocdo'});
+            return res.status(400).json({ok:false, msj: ' el id esta equivocdo'});
         } catch (error) {
             errorCustom(res, error);
         }
