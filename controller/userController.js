@@ -2,6 +2,7 @@ const {request, response} = require('express');
 const UserModel = require('../models/userModel');
 const { Types } = require('mongoose');
 const errorCustom = require('../utils/errores');
+const { findByIdAndUpdate } = require('../models/userModel');
 const UserController = {
     get: async (req = request, res = response) => {
         // throw new Error('jjjjjjjjjjjjjj');
@@ -116,12 +117,39 @@ const UserController = {
 
     actualizar: async (req = request, res = response) => {
         const { id } = req.params;
+        const {
+            role,
+            language,
+            email,
+            name,
+            lastname,
+            country,
+            countryCode,
+            countryCodeName,
+            phone
+        } = req.body;
+        const currency = req.body.currency.code;
+        if( !role, !language, !email, !name, !lastname, !currency, !country, !countryCode, !countryCodeName, !phone){
+            return errorCustom(res, '');
+        }
         
         if(Types.ObjectId.isValid(id)){
-
+            try {
+                const userUpdate = await UserModel.findByIdAndUpdate(id, {role,
+                    language,
+                    email,
+                    name,
+                    lastname,
+                    country,
+                    countryCode,
+                    countryCodeName,
+                    phone});
+                    return res.json({user: userUpdate});
+            } catch (error) {
+                return errorCustom(res, '');
+            }
         }
-        console.log('id :>> ', id);
-        return res.json({ok:true});
+        
     },
 
 
