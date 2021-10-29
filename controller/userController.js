@@ -155,8 +155,13 @@ const UserController = {
     eliminar: async (req = request, res = response) => {
         const { id } = req.params;
         if(Types.ObjectId.isValid(id)){
-            const user = await UserModel.findByIdAndDelete(id);
-            return res.json(user);
+            try {
+                const user = await UserModel.findByIdAndDelete(id);
+                return res.json(user);
+                
+            } catch (error) {
+                return errorCustom(res, '');
+            }
         }
     }
 }
